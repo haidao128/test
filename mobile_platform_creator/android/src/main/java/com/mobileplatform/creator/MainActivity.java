@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
             final List<AppInfo> loadedApps = new ArrayList<>();
 
             for (PackageInfo packageInfo : packages) {
-                // 可以根据需要过滤掉系统应用
-                // if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                // --- 暂时移除过滤条件，显示所有应用 ---
+                // if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) { 
                     try {
                         String appName = packageInfo.applicationInfo.loadLabel(pm).toString();
                         String packageName = packageInfo.packageName;
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         Log.e(TAG, "Error loading info for package: " + packageInfo.packageName, e);
                     }
-                // }
+                // } 
             }
 
             // 更新 UI 必须在主线程进行

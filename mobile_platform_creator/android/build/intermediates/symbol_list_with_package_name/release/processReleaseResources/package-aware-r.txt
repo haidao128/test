@@ -3205,6 +3205,8 @@ id brightnessSlideBar
 id brightnessSlideBarFrame
 id bubble
 id buttonPanel
+id button_detail_open
+id button_detail_uninstall
 id cache_measures
 id callMeasure
 id cancel_button
@@ -3329,6 +3331,7 @@ id ignore
 id ignoreRequest
 id image
 id imageView_app_icon
+id imageView_detail_icon
 id immediateStop
 id included
 id indeterminate
@@ -3453,6 +3456,7 @@ id pin
 id position
 id postLayout
 id pressed
+id progressBar_loading
 id progress_circular
 id progress_horizontal
 id radio
@@ -3567,6 +3571,11 @@ id textSpacerNoTitle
 id textStart
 id textTop
 id textView_app_name
+id textView_detail_app_name
+id textView_detail_app_path
+id textView_detail_package_name
+id textView_detail_version_code
+id textView_detail_version_name
 id textView_package_name
 id text_input_end_icon
 id text_input_error_icon
@@ -3583,6 +3592,7 @@ id titleDividerNoCustom
 id title_template
 id toggle
 id toolbar
+id toolbar_detail
 id top
 id topPanel
 id touch_outside
@@ -3744,6 +3754,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_app_detail
 layout activity_main
 layout custom_dialog
 layout design_bottom_navigation_item

@@ -26,5 +26,9 @@
     {
         "merged": "com.mobileplatform.creator.android-release-51:/drawable_ic_launcher_foreground.xml.flat",
         "source": "com.mobileplatform.creator.android-main-52:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_app_detail.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_app_detail.xml"
     }
 ]
