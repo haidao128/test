@@ -1,10 +1,16 @@
 package com.mobileplatform.creator;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,14 +19,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mobileplatform.creator.adapter.AppInfoAdapter;
+import com.mobileplatform.creator.model.AppInfo;
 import com.mobileplatform.creator.ui.batch.BatchManagerActivity;
 import com.mobileplatform.creator.ui.category.CategoryManagerActivity;
 import com.mobileplatform.creator.ui.log.InstallLogActivity;
 import com.mobileplatform.creator.ui.mpk.MPKCreatorActivity;
-import com.mobileplatform.creator.update.UpdateCheckService; 
+import com.mobileplatform.creator.update.UpdateCheckService;
 
-// TODO: 创建并替换为实际的应用信息 Adapter
-import com.mobileplatform.creator.adapter.AppInfoAdapter; 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 应用的主 Activity。
@@ -28,8 +38,12 @@ import com.mobileplatform.creator.adapter.AppInfoAdapter;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private RecyclerView recyclerViewApps;
-    private AppInfoAdapter appInfoAdapter; // TODO: 需要创建这个 Adapter 类
+    private AppInfoAdapter appInfoAdapter;
+    private ProgressBar progressBar;
+    private List<AppInfo> appList = new ArrayList<>();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,32 +54,84 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // 初始化 ProgressBar
+        progressBar = findViewById(R.id.progressBar_loading);
+
         // 初始化 RecyclerView
         recyclerViewApps = findViewById(R.id.recyclerView_apps);
         recyclerViewApps.setLayoutManager(new LinearLayoutManager(this));
 
-        // TODO: 初始化并设置 Adapter
-        // appInfoAdapter = new AppInfoAdapter(this, new ArrayList<>()); // 假设 Adapter 构造函数
-        // recyclerViewApps.setAdapter(appInfoAdapter);
-        // TODO: 加载应用列表数据并更新 Adapter
+        // 初始化 Adapter (传入空的列表先)
+        appInfoAdapter = new AppInfoAdapter(this, appList);
+        recyclerViewApps.setAdapter(appInfoAdapter);
 
         // 设置 FAB 点击事件
         FloatingActionButton fab = findViewById(R.id.fab_create_mpk);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 跳转到 MPK 创建器 Activity
                 Intent intent = new Intent(MainActivity.this, MPKCreatorActivity.class);
                 startActivity(intent);
             }
         });
 
-        // TODO: 实现应用列表项点击跳转到 AppDetailActivity 的逻辑
+        // 异步加载应用列表
+        loadInstalledApps();
+    }
+
+    /**
+     * 使用后台线程加载设备上已安装的应用信息。
+     */
+    private void loadInstalledApps() {
+        showLoading(true);
+        executorService.execute(() -> {
+            PackageManager pm = getPackageManager();
+            // 获取所有已安装应用的信息，可以添加 FLAG 来过滤，例如只获取非系统应用
+            List<PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_META_DATA);
+            final List<AppInfo> loadedApps = new ArrayList<>();
+
+            for (PackageInfo packageInfo : packages) {
+                // 可以根据需要过滤掉系统应用
+                // if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                    try {
+                        String appName = packageInfo.applicationInfo.loadLabel(pm).toString();
+                        String packageName = packageInfo.packageName;
+                        String versionName = packageInfo.versionName;
+                        int versionCode = packageInfo.versionCode;
+                        Drawable icon = packageInfo.applicationInfo.loadIcon(pm);
+                        String appPath = packageInfo.applicationInfo.sourceDir;
+
+                        loadedApps.add(new AppInfo(appName, packageName, versionName, versionCode, icon, appPath));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error loading info for package: " + packageInfo.packageName, e);
+                    }
+                // }
+            }
+
+            // 更新 UI 必须在主线程进行
+            runOnUiThread(() -> {
+                appList.clear();
+                appList.addAll(loadedApps);
+                appInfoAdapter.notifyDataSetChanged(); // 更新 RecyclerView
+                showLoading(false);
+            });
+        });
+    }
+
+    /**
+     * 控制加载指示器的显示与隐藏。
+     */
+    private void showLoading(boolean isLoading) {
+        if (progressBar != null) {
+            progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        }
+        if (recyclerViewApps != null) {
+             recyclerViewApps.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // 加载菜单资源
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -73,8 +139,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
-        // 处理菜单项点击事件
         if (id == R.id.action_install_log) {
             startActivity(new Intent(this, InstallLogActivity.class));
             return true;
@@ -85,13 +149,19 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, BatchManagerActivity.class));
             return true;
         } else if (id == R.id.action_check_update) {
-            // 启动更新检查服务
             Intent updateIntent = new Intent(this, UpdateCheckService.class);
             startService(updateIntent);
-            // TODO: 可以加一个提示，比如 Toast
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 关闭线程池，防止内存泄漏
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
     }
 } 

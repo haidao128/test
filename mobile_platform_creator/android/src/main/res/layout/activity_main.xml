@@ -20,6 +20,15 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- 添加 ProgressBar 用于显示加载状态 -->
+    <ProgressBar
+        android:id="@+id/progressBar_loading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/> 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_apps"
         android:layout_width="match_parent"
