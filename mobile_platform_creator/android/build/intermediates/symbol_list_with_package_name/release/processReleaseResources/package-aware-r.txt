@@ -3154,10 +3154,14 @@ id action_bar_root
 id action_bar_spinner
 id action_bar_subtitle
 id action_bar_title
+id action_batch_manager
+id action_category_manager
+id action_check_update
 id action_container
 id action_context_bar
 id action_divider
 id action_image
+id action_install_log
 id action_menu_divider
 id action_menu_presenter
 id action_mode_bar
@@ -3285,6 +3289,7 @@ id enterAlwaysCollapsed
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
+id fab_create_mpk
 id fade
 id fill
 id fill_horizontal
@@ -3323,6 +3328,7 @@ id ifRoom
 id ignore
 id ignoreRequest
 id image
+id imageView_app_icon
 id immediateStop
 id included
 id indeterminate
@@ -3452,6 +3458,7 @@ id progress_horizontal
 id radio
 id ratio
 id rectangles
+id recyclerView_apps
 id reverseSawtooth
 id right
 id rightToLeft
@@ -3559,6 +3566,8 @@ id textSpacerNoButtons
 id textSpacerNoTitle
 id textStart
 id textTop
+id textView_app_name
+id textView_package_name
 id text_input_end_icon
 id text_input_error_icon
 id text_input_start_icon
@@ -3573,6 +3582,7 @@ id title
 id titleDividerNoCustom
 id title_template
 id toggle
+id toolbar
 id top
 id topPanel
 id touch_outside
@@ -3753,6 +3763,7 @@ layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout dialog_colorpicker_colorpickerview_skydoves
 layout flag_bubble_colorpickerview_skydoves
+layout item_app_info
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title
@@ -3816,6 +3827,7 @@ layout select_dialog_singlechoice_material
 layout support_simple_spinner_dropdown_item
 layout zxing_barcode_scanner
 layout zxing_capture
+menu menu_main
 mipmap ic_launcher
 mipmap ic_launcher_round
 plurals mtrl_badge_content_description
@@ -4614,6 +4626,8 @@ style Theme_MaterialComponents_Light_NoActionBar_Bridge
 style Theme_MaterialComponents_NoActionBar
 style Theme_MaterialComponents_NoActionBar_Bridge
 style Theme_MobilePlatformCreator
+style Theme_MobilePlatformCreator_AppBarOverlay
+style Theme_MobilePlatformCreator_PopupOverlay
 style ThemeOverlay_AppCompat
 style ThemeOverlay_AppCompat_ActionBar
 style ThemeOverlay_AppCompat_Dark

@@ -4,6 +4,10 @@
         "source": "com.mobileplatform.creator.android-main-52:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
+        "merged": "com.mobileplatform.creator.android-release-51:/menu_menu_main.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/menu/menu_main.xml"
+    },
+    {
         "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_main.xml.flat",
         "source": "com.mobileplatform.creator.android-main-52:/layout/activity_main.xml"
     },
@@ -14,6 +18,10 @@
     {
         "merged": "com.mobileplatform.creator.android-release-51:/xml_file_paths.xml.flat",
         "source": "com.mobileplatform.creator.android-main-52:/xml/file_paths.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_item_app_info.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/item_app_info.xml"
     },
     {
         "merged": "com.mobileplatform.creator.android-release-51:/drawable_ic_launcher_foreground.xml.flat",
