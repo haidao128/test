@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_main.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/xml_file_paths.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/xml/file_paths.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/drawable/ic_launcher_foreground.xml"
+    }
+]

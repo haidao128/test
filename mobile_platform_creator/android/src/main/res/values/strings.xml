@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Mobile Platform Creator</string>
+    <string name="create_mpk_package">创建 MPK 应用包</string>
+    <!-- 您可以在这里添加其他字符串资源 -->
+</resources> 

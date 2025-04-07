@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="C:\cursor\test\test2\mobile_platform_creator\android"
+    name=":android"
+    type="APP"
+    maven="MobilePlatformCreator:android:unspecified"
+    agpVersion="8.9.1"
+    buildFolder="build"
+    bootClassPath="C:\Users\lwr\AppData\Local\Android\Sdk\platforms\android-34\android.jar;C:\Users\lwr\AppData\Local\Android\Sdk\build-tools\35.0.0\core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-34"
+    neverShrinking="true">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

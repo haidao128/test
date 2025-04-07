@@ -1,0 +1,30 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        // Add other repositories like JitPack if needed
+        // maven { url 'https://jitpack.io' }
+    }
+}
+
+/* // 暂时注释掉 Java 工具链管理配置
+toolchainManagement {
+    jvm {
+        javaRepositories {
+            repository("foojay") // 使用 Foojay 作为 JDK 下载源
+            repository("azul")   // 也可以添加 Azul
+        }
+    }
+}
+*/
+
+rootProject.name = "MobilePlatformCreator"
+include ':android' // 包含我们的 android 模块 

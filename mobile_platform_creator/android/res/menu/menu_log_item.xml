@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_view_log_detail"
+        android:title="查看详情" />
+    <item
+        android:id="@+id/action_delete_log"
+        android:title="删除" />
+</menu> 

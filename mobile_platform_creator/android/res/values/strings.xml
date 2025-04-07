@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">移动平台创建器</string>
+    
+    <!-- 主导航 -->
+    <string name="title_apps">应用</string>
+    <string name="title_store">商店</string>
+    <string name="title_sandbox">沙箱</string>
+    <string name="title_settings">设置</string>
+    
+    <!-- 通用 -->
+    <string name="search">搜索</string>
+    <string name="search_apps">搜索应用</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="ok">确定</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="save">保存</string>
+    <string name="delete">删除</string>
+    <string name="share">分享</string>
+    <string name="open">打开</string>
+    <string name="close">关闭</string>
+    <string name="edit">编辑</string>
+    <string name="unknown">未知</string>
+    
+    <!-- 应用列表 -->
+    <string name="no_apps_installed">未安装任何应用</string>
+    <string name="no_apps_found">未找到应用</string>
+    
+    <!-- 应用商店 -->
+    <string name="featured_apps">精选应用</string>
+    <string name="all_apps">所有应用</string>
+    <string name="download">下载</string>
+    <string name="downloading">下载中…</string>
+    <string name="install">安装</string>
+    <string name="installed">已安装</string>
+    <string name="update">更新</string>
+    <string name="uninstall">卸载</string>
+    
+    <!-- 应用安装管理 -->
+    <string name="app_details">应用详情</string>
+    <string name="app_icon">应用图标</string>
+    <string name="version">版本</string>
+    <string name="size">大小</string>
+    <string name="install_date">安装日期</string>
+    <string name="last_update">最后更新</string>
+    <string name="install_path">安装路径</string>
+    <string name="download_success">下载成功</string>
+    <string name="download_failed">下载失败</string>
+    <string name="install_success">安装成功</string>
+    <string name="install_failed">安装失败</string>
+    <string name="uninstall_app">卸载应用</string>
+    <string name="uninstall_confirm_message">确定要卸载 %1$s 吗？</string>
+    <string name="uninstall_success">卸载成功</string>
+    <string name="uninstall_failed">卸载失败</string>
+    
+    <!-- 错误消息 -->
+    <string name="network_error">网络错误，请检查网络连接</string>
+    <string name="permission_error">权限错误，请授予必要权限</string>
+    <string name="storage_error">存储错误，请检查存储空间</string>
+    <string name="invalid_package">无效的安装包</string>
+    
+    <!-- 设置 -->
+    <string name="settings">设置</string>
+    <string name="general_settings">常规设置</string>
+    <string name="network_settings">网络设置</string>
+    <string name="storage_settings">存储设置</string>
+    <string name="about">关于</string>
+    
+    <!-- 沙箱 -->
+    <string name="sandbox_empty">沙箱中没有应用</string>
+    <string name="sandbox_running">沙箱运行中</string>
+    <string name="sandbox_stopped">沙箱已停止</string>
+    
+    <!-- MPK创建器相关 -->
+    <string name="create_mpk_package">创建MPK应用包</string>
+    <string name="mpk_creation_success">MPK包创建成功</string>
+    <string name="mpk_creation_failed">创建失败</string>
+    <string name="permission_required">需要存储权限以创建MPK包</string>
+    <string name="package_id_required">包ID不能为空</string>
+    <string name="app_name_required">应用名称不能为空</string>
+    <string name="version_required">版本号不能为空</string>
+    <string name="creating_mpk">正在创建MPK包...</string>
+</resources> 

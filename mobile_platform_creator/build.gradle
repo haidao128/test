@@ -1,0 +1,31 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        google()  // Google's Maven repository
+        mavenCentral()
+    }
+    dependencies {
+        // Specify the Android Gradle plugin version
+        classpath 'com.android.tools.build:gradle:8.9.1' // 您可以根据需要调整版本
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+// Define repositories for project dependencies (applies to all modules)
+// 这个 allprojects 块是多余的，因为仓库已经在 settings.gradle 中定义
+/*
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        // Add other repositories like JitPack if needed
+        // maven { url 'https://jitpack.io' }
+    }
+}
+*/ 

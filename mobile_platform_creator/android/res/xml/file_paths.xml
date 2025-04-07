@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 内部存储应用专属目录 -->
+    <files-path name="internal_files" path="." />
+    
+    <!-- 内部存储缓存目录 -->
+    <cache-path name="internal_cache" path="." />
+    
+    <!-- 外部存储应用专属目录 -->
+    <external-files-path name="external_files" path="." />
+    
+    <!-- 外部存储应用缓存目录 -->
+    <external-cache-path name="external_cache" path="." />
+    
+    <!-- 外部存储公共目录下的下载文件夹 -->
+    <external-path name="external_downloads" path="Download" />
+    
+    <!-- 应用安装包存储位置 -->
+    <external-files-path name="app_packages" path="packages" />
+</paths> 

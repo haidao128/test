@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 注意：对于Android 10+，WRITE_EXTERNAL_STORAGE权限效果有限，需要适配分区存储或使用requestLegacyExternalStorage -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" /> 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MobilePlatformCreator">
+
+        <!-- 主活动 -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.download.DownloadActivity"
+            android:exported="false"
+            android:label="下载管理"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- MPK创建器活动 -->
+        <activity
+            android:name=".ui.mpk.MPKCreatorActivity"
+            android:label="@string/create_mpk_package"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 应用详情活动 -->
+        <activity
+            android:name=".ui.app.AppDetailActivity"
+            android:label="应用详情"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 批量管理活动 -->
+        <activity
+            android:name=".ui.batch.BatchManagerActivity"
+            android:label="批量管理"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 分类管理活动 -->
+        <activity
+            android:name=".ui.category.CategoryManagerActivity"
+            android:label="分类管理"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 安装日志活动 -->
+        <activity
+            android:name=".ui.log.InstallLogActivity"
+            android:label="安装日志"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 沙箱服务 -->
+        <service
+            android:name=".sandbox.SandboxService"
+            android:exported="false"
+            android:process=":sandbox" />
+
+        <!-- 更新检查服务 -->
+        <service
+            android:name=".update.UpdateCheckService"
+            android:exported="false" />
+
+        <!-- 内容提供者 - 应用数据访问 -->
+        <provider
+            android:name=".data.AppContentProvider"
+            android:authorities="com.mobileplatform.creator.provider"
+            android:exported="false" />
+
+        <!-- 文件提供者 - 分享应用文件 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.mobileplatform.creator.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+    </application>
+
+</manifest> 

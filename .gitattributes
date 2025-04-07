@@ -1,0 +1,12 @@
+# 1. 代码文件 - 强制 LF 换行
+*.sh           text eol=lf
+*.xml          text eol=lf
+*.java         text eol=lf
+*.properties   text eol=lf
+*.txt          text eol=lf
+
+# 2. 构建/IDE 文件 - 禁用文本转换
+android/build/intermediates/**/*  -text
+android/build/outputs/**/*        -text
+.idea/**/*                        -text
+*.iml                             -text

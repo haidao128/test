@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 平台类型列表 -->
+    <string-array name="platform_types">
+        <item>Android</item>
+        <item>iOS</item>
+        <item>Web</item>
+        <item>Desktop</item>
+        <item>Cross</item>
+    </string-array>
+</resources> 
