@@ -20,6 +20,14 @@
         "source": "com.mobileplatform.creator.android-main-52:/xml/file_paths.xml"
     },
     {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_install_log.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_install_log.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_item_log_entry.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/item_log_entry.xml"
+    },
+    {
         "merged": "com.mobileplatform.creator.android-release-51:/layout_item_app_info.xml.flat",
         "source": "com.mobileplatform.creator.android-main-52:/layout/item_app_info.xml"
     },

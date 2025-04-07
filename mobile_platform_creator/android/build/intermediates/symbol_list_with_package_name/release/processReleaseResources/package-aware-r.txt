@@ -3332,6 +3332,7 @@ id ignoreRequest
 id image
 id imageView_app_icon
 id imageView_detail_icon
+id imageView_log_status
 id immediateStop
 id included
 id indeterminate
@@ -3463,6 +3464,7 @@ id radio
 id ratio
 id rectangles
 id recyclerView_apps
+id recyclerView_logs
 id reverseSawtooth
 id right
 id rightToLeft
@@ -3576,6 +3578,10 @@ id textView_detail_app_path
 id textView_detail_package_name
 id textView_detail_version_code
 id textView_detail_version_name
+id textView_log_app_name
+id textView_log_details
+id textView_log_operation
+id textView_log_timestamp
 id textView_package_name
 id text_input_end_icon
 id text_input_error_icon
@@ -3593,6 +3599,7 @@ id title_template
 id toggle
 id toolbar
 id toolbar_detail
+id toolbar_log
 id top
 id topPanel
 id touch_outside
@@ -3755,6 +3762,7 @@ layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_app_detail
+layout activity_install_log
 layout activity_main
 layout custom_dialog
 layout design_bottom_navigation_item
@@ -3775,6 +3783,7 @@ layout design_text_input_start_icon
 layout dialog_colorpicker_colorpickerview_skydoves
 layout flag_bubble_colorpickerview_skydoves
 layout item_app_info
+layout item_log_entry
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title
