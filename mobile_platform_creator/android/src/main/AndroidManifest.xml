@@ -53,13 +53,20 @@
         <!-- 分类管理活动 -->
         <activity
             android:name=".ui.category.CategoryManagerActivity"
-            android:label="分类管理"
-            android:parentActivityName=".MainActivity" />
+            android:exported="false"
+            android:label="@string/category_manager"
+            android:parentActivityName=".MainActivity"/>
 
         <!-- 安装日志活动 -->
         <activity
             android:name=".ui.log.InstallLogActivity"
             android:label="安装日志"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- 日志测试活动 -->
+        <activity
+            android:name=".ui.log.LogTestActivity"
+            android:label="日志测试"
             android:parentActivityName=".MainActivity" />
 
         <!-- 沙箱服务 -->

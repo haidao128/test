@@ -87,6 +87,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="打开应用" />
+                
+            <Button
+                android:id="@+id/button_detail_add_to_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="添加到分类" />
             
             <Button
                 android:id="@+id/button_detail_uninstall"

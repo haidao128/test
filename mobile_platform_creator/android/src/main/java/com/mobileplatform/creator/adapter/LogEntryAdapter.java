@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobileplatform.creator.R;
-import com.mobileplatform.creator.data.entity.LogEntry;
+import com.mobileplatform.creator.model.LogEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,19 +35,19 @@ public class LogEntryAdapter extends ListAdapter<LogEntry, LogEntryAdapter.LogVi
     private static final DiffUtil.ItemCallback<LogEntry> DIFF_CALLBACK = new DiffUtil.ItemCallback<LogEntry>() {
         @Override
         public boolean areItemsTheSame(@NonNull LogEntry oldItem, @NonNull LogEntry newItem) {
-            return oldItem.id == newItem.id;
+            return oldItem.getId() == newItem.getId();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull LogEntry oldItem, @NonNull LogEntry newItem) {
             // 比较所有可能变化的字段
-            return oldItem.packageName.equals(newItem.packageName) &&
-                   oldItem.appName.equals(newItem.appName) &&
-                   oldItem.versionName.equals(newItem.versionName) &&
-                   oldItem.timestamp == newItem.timestamp &&
-                   oldItem.operationType.equals(newItem.operationType) &&
-                   oldItem.status.equals(newItem.status) &&
-                   (oldItem.details == null ? newItem.details == null : oldItem.details.equals(newItem.details));
+            return oldItem.getPackageName().equals(newItem.getPackageName()) &&
+                   oldItem.getAppName().equals(newItem.getAppName()) &&
+                   oldItem.getTimestamp() == newItem.getTimestamp() &&
+                   oldItem.getOperationType().equals(newItem.getOperationType()) &&
+                   oldItem.getStatus().equals(newItem.getStatus()) &&
+                   (oldItem.getDetails() == null ? newItem.getDetails() == null : 
+                    oldItem.getDetails().equals(newItem.getDetails()));
         }
     };
 
@@ -88,24 +88,24 @@ public class LogEntryAdapter extends ListAdapter<LogEntry, LogEntryAdapter.LogVi
         }
 
         public void bind(LogEntry logEntry) {
-            String appVersionInfo = logEntry.appName + " (v" + logEntry.versionName + ")";
+            String appVersionInfo = logEntry.getAppName() + " (" + logEntry.getPackageName() + ")";
             appNameTextView.setText(appVersionInfo);
-            timestampTextView.setText(DATE_FORMAT.format(new Date(logEntry.timestamp)));
-            String operationInfo = "操作: " + logEntry.operationType + " / " + logEntry.status;
+            timestampTextView.setText(DATE_FORMAT.format(new Date(logEntry.getTimestamp())));
+            String operationInfo = "操作: " + logEntry.getOperationType() + " / " + logEntry.getStatus();
             operationTextView.setText(operationInfo);
             
-            if (logEntry.details != null && !logEntry.details.isEmpty()) {
-                detailsTextView.setText(logEntry.details);
+            if (logEntry.getDetails() != null && !logEntry.getDetails().isEmpty()) {
+                detailsTextView.setText(logEntry.getDetails());
             } else {
                  detailsTextView.setText("无详细信息"); 
             }
             detailsTextView.setVisibility(View.GONE); // 默认隐藏详情
 
             // 根据状态设置图标 (示例)
-            if ("SUCCESS".equalsIgnoreCase(logEntry.status)) {
+            if ("SUCCESS".equalsIgnoreCase(logEntry.getStatus())) {
                 statusIcon.setImageResource(android.R.drawable.ic_dialog_info); 
                 // 可以为不同操作类型设置不同颜色滤镜 statusIcon.setColorFilter(...)
-            } else if ("FAILURE".equalsIgnoreCase(logEntry.status)) {
+            } else if ("FAILURE".equalsIgnoreCase(logEntry.getStatus())) {
                 statusIcon.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
             } else {
                 statusIcon.setImageResource(android.R.drawable.ic_menu_info_details);

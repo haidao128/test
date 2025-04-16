@@ -14,8 +14,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mobileplatform.creator.R;
+import com.mobileplatform.creator.model.Category;
+import com.mobileplatform.creator.ui.category.CategoryManagerActivity;
+import com.mobileplatform.creator.viewmodel.AppCategoryViewModel;
+import com.mobileplatform.creator.viewmodel.CategoryViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppDetailActivity extends AppCompatActivity {
 
@@ -30,7 +40,12 @@ public class AppDetailActivity extends AppCompatActivity {
     private TextView textViewVersionCode;
     private TextView textViewAppPath;
     private Button buttonOpenApp;
+    private Button buttonAddToCategory;
     private Button buttonUninstallApp;
+
+    private CategoryViewModel categoryViewModel;
+    private AppCategoryViewModel appCategoryViewModel;
+    private List<Category> categories = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +70,17 @@ public class AppDetailActivity extends AppCompatActivity {
         textViewVersionCode = findViewById(R.id.textView_detail_version_code);
         textViewAppPath = findViewById(R.id.textView_detail_app_path);
         buttonOpenApp = findViewById(R.id.button_detail_open);
+        buttonAddToCategory = findViewById(R.id.button_detail_add_to_category);
         buttonUninstallApp = findViewById(R.id.button_detail_uninstall);
+
+        // 初始化ViewModel
+        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        appCategoryViewModel = new ViewModelProvider(this).get(AppCategoryViewModel.class);
+        
+        // 加载分类数据
+        categoryViewModel.getAllCategories().observe(this, categoriesList -> {
+            categories = categoriesList;
+        });
 
         // 获取传递过来的包名
         currentPackageName = getIntent().getStringExtra("PACKAGE_NAME");
@@ -114,6 +139,11 @@ public class AppDetailActivity extends AppCompatActivity {
                 }
             }
         });
+        
+        // 添加到分类按钮
+        buttonAddToCategory.setOnClickListener(v -> {
+            showCategorySelectionDialog();
+        });
 
         // 卸载应用按钮
         buttonUninstallApp.setOnClickListener(v -> {
@@ -130,6 +160,53 @@ public class AppDetailActivity extends AppCompatActivity {
             }
         });
     }
+    
+    /**
+     * 显示分类选择对话框
+     */
+    private void showCategorySelectionDialog() {
+        if (categories.isEmpty()) {
+            // 如果没有分类，提示用户并提供创建分类的选项
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("没有可用分类")
+                    .setMessage("您还没有创建任何分类，是否现在创建？")
+                    .setPositiveButton("创建分类", (dialog, which) -> {
+                        // 跳转到分类管理界面
+                        Intent intent = new Intent(this, CategoryManagerActivity.class);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
+            return;
+        }
+        
+        String[] categoryNames = new String[categories.size()];
+        for (int i = 0; i < categories.size(); i++) {
+            categoryNames[i] = categories.get(i).getName();
+        }
+        
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("选择分类")
+                .setItems(categoryNames, (dialog, which) -> {
+                    Category selectedCategory = categories.get(which);
+                    
+                    // 添加应用到分类
+                    appCategoryViewModel.addAppToCategory(currentPackageName, selectedCategory.getId());
+                    
+                    // 显示成功提示
+                    Toast.makeText(this, 
+                            String.format("已将 %s 添加到分类: %s", 
+                                    textViewAppName.getText(), selectedCategory.getName()),
+                            Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .setNeutralButton("创建新分类", (dialog, which) -> {
+                    // 跳转到分类管理界面
+                    Intent intent = new Intent(this, CategoryManagerActivity.class);
+                    startActivity(intent);
+                })
+                .show();
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -138,21 +215,25 @@ public class AppDetailActivity extends AppCompatActivity {
         return true;
     }
     
-     // TODO: 可以在 onResume 中检查应用是否已被卸载，如果卸载了可以 finish() 当前 Activity
-     /*
-     @Override
-     protected void onResume() {
-         super.onResume();
-         if (currentPackageName != null) {
-             try {
-                 getPackageManager().getPackageInfo(currentPackageName, 0);
-                 // 应用仍然存在
-             } catch (PackageManager.NameNotFoundException e) {
-                 // 应用已被卸载
-                 Toast.makeText(this, "应用已被卸载", Toast.LENGTH_SHORT).show();
-                 finish();
-             }
-         }
-     }
-     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // 重新加载分类数据
+        categoryViewModel.getAllCategories().observe(this, categoriesList -> {
+            categories = categoriesList;
+        });
+        
+        // 检查应用是否已被卸载
+        if (currentPackageName != null) {
+            try {
+                getPackageManager().getPackageInfo(currentPackageName, 0);
+                // 应用仍然存在
+            } catch (PackageManager.NameNotFoundException e) {
+                // 应用已被卸载
+                Toast.makeText(this, "应用已被卸载", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
 } 

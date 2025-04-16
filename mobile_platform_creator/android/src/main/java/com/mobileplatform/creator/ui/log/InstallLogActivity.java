@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobileplatform.creator.R;
 import com.mobileplatform.creator.adapter.LogEntryAdapter;
-import com.mobileplatform.creator.data.entity.LogEntry; // 用于示例
-import java.util.Date; // 用于示例
+import com.mobileplatform.creator.model.LogEntry;
+import com.mobileplatform.creator.viewmodel.LogEntryViewModel;
+
+import java.util.Date;
 
 public class InstallLogActivity extends AppCompatActivity {
 
-    private InstallLogViewModel installLogViewModel;
+    private LogEntryViewModel logEntryViewModel;
     private LogEntryAdapter adapter;
 
     @Override
@@ -41,28 +43,28 @@ public class InstallLogActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // 获取 ViewModel
-        installLogViewModel = new ViewModelProvider(this).get(InstallLogViewModel.class);
+        logEntryViewModel = new ViewModelProvider(this).get(LogEntryViewModel.class);
 
         // 观察 LiveData 数据变化
-        installLogViewModel.getAllLogs().observe(this, logs -> {
+        logEntryViewModel.getAllLogs().observe(this, logs -> {
             // 当日志数据更新时，提交给 Adapter
             adapter.submitList(logs);
         });
         
         // 添加一些示例日志数据 (仅用于测试)
-        if (installLogViewModel.getAllLogs().getValue() == null || installLogViewModel.getAllLogs().getValue().isEmpty()) {
+        if (logEntryViewModel.getAllLogs().getValue() == null || logEntryViewModel.getAllLogs().getValue().isEmpty()) {
              addSampleLogs();
         }
     }
     
     // 添加示例日志的方法
     private void addSampleLogs() {
-        LogEntry log1 = new LogEntry("com.example.app1", "测试应用1", "1.0", 1, new Date().getTime(), "INSTALL", "SUCCESS", "安装成功");
-        LogEntry log2 = new LogEntry("com.example.app2", "测试应用2", "1.1", 2, new Date().getTime() - 10000, "UPDATE", "FAILURE", "更新失败：存储空间不足");
-        LogEntry log3 = new LogEntry("com.example.app1", "测试应用1", "1.0", 1, new Date().getTime() - 20000, "UNINSTALL", "SUCCESS", null);
-        installLogViewModel.insert(log1);
-        installLogViewModel.insert(log2);
-        installLogViewModel.insert(log3);
+        LogEntry log1 = new LogEntry("测试应用1", "com.example.app1", "INSTALL", "SUCCESS", "安装成功");
+        LogEntry log2 = new LogEntry("测试应用2", "com.example.app2", "UPDATE", "FAILURE", "更新失败：存储空间不足");
+        LogEntry log3 = new LogEntry("测试应用1", "com.example.app1", "UNINSTALL", "SUCCESS", null);
+        logEntryViewModel.insert(log1);
+        logEntryViewModel.insert(log2);
+        logEntryViewModel.insert(log3);
     }
 
     @Override
@@ -91,9 +93,15 @@ public class InstallLogActivity extends AppCompatActivity {
     // 观察指定类型的日志
     /*
     private void observeLogs(String type) {
-        installLogViewModel.getLogsByType(type).observe(this, logs -> {
-            adapter.submitList(logs);
-        });
+        if (type == null) {
+            logEntryViewModel.getAllLogs().observe(this, logs -> {
+                adapter.submitList(logs);
+            });
+        } else {
+            logEntryViewModel.getLogsByOperationType(type).observe(this, logs -> {
+                adapter.submitList(logs);
+            });
+        }
     }
     */
 

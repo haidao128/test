@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 定义应用可以共享的文件路径 -->
-    <!-- 示例：共享缓存目录下的文件 -->
-    <cache-path name="shared_cache" path="."/>
-    <!-- 示例：共享外部存储的应用专属目录下的文件 -->
-    <external-files-path name="external_files" path="."/>
-    <!-- 根据您的需要添加其他路径 -->
+    <!-- 系统应用路径 -->
+    <external-path name="external_files" path="."/>
+    <root-path name="root" path="/"/>
+    <external-files-path name="external_files_path" path="."/>
+    <cache-path name="cache" path="."/>
+    <external-cache-path name="external_cache" path="."/>
+    <files-path name="files" path="."/>
 </paths> 

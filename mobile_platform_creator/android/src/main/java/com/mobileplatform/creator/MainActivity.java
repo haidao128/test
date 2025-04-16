@@ -24,6 +24,7 @@ import com.mobileplatform.creator.model.AppInfo;
 import com.mobileplatform.creator.ui.batch.BatchManagerActivity;
 import com.mobileplatform.creator.ui.category.CategoryManagerActivity;
 import com.mobileplatform.creator.ui.log.InstallLogActivity;
+import com.mobileplatform.creator.ui.log.LogTestActivity;
 import com.mobileplatform.creator.ui.mpk.MPKCreatorActivity;
 import com.mobileplatform.creator.update.UpdateCheckService;
 
@@ -99,20 +100,19 @@ public class MainActivity extends AppCompatActivity {
                         String versionName = packageInfo.versionName;
                         int versionCode = packageInfo.versionCode;
                         Drawable icon = packageInfo.applicationInfo.loadIcon(pm);
-                        String appPath = packageInfo.applicationInfo.sourceDir;
-
-                        loadedApps.add(new AppInfo(appName, packageName, versionName, versionCode, icon, appPath));
+                        
+                        AppInfo appInfo = new AppInfo(appName, packageName, versionName, versionCode, icon, packageInfo.applicationInfo.sourceDir);
+                        loadedApps.add(appInfo);
                     } catch (Exception e) {
-                        Log.e(TAG, "Error loading info for package: " + packageInfo.packageName, e);
+                        Log.e(TAG, "Error loading app info: " + e.getMessage());
                     }
-                // } 
+                // }
             }
 
-            // 更新 UI 必须在主线程进行
             runOnUiThread(() -> {
                 appList.clear();
                 appList.addAll(loadedApps);
-                appInfoAdapter.notifyDataSetChanged(); // 更新 RecyclerView
+                appInfoAdapter.notifyDataSetChanged();
                 showLoading(false);
             });
         });
@@ -139,14 +139,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_install_log) {
-            startActivity(new Intent(this, InstallLogActivity.class));
+        if (id == R.id.action_batch_manager) {
+            startActivity(new Intent(this, BatchManagerActivity.class));
             return true;
         } else if (id == R.id.action_category_manager) {
-            startActivity(new Intent(this, CategoryManagerActivity.class));
+            Intent intent = new Intent(this, CategoryManagerActivity.class);
+            startActivity(intent);
             return true;
-        } else if (id == R.id.action_batch_manager) {
-            startActivity(new Intent(this, BatchManagerActivity.class));
+        } else if (id == R.id.action_install_log) {
+            startActivity(new Intent(this, InstallLogActivity.class));
+            return true;
+        } else if (id == R.id.action_log_test) {
+            startActivity(new Intent(this, LogTestActivity.class));
             return true;
         } else if (id == R.id.action_check_update) {
             Intent updateIntent = new Intent(this, UpdateCheckService.class);

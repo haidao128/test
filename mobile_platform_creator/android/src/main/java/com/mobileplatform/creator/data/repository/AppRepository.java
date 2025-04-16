@@ -4,8 +4,8 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.mobileplatform.creator.data.AppDatabase;
-import com.mobileplatform.creator.data.dao.LogDao;
-import com.mobileplatform.creator.data.entity.LogEntry;
+import com.mobileplatform.creator.data.LogEntryDao;
+import com.mobileplatform.creator.model.LogEntry;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  */
 public class AppRepository {
 
-    private LogDao logDao;
+    private LogEntryDao logEntryDao;
     // TODO: 添加其他 DAO 成员变量
     private LiveData<List<LogEntry>> allLogs;
     
@@ -28,39 +28,39 @@ public class AppRepository {
 
     public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
-        logDao = db.logDao();
-        allLogs = logDao.getAllLogs();
+        logEntryDao = db.logEntryDao();
+        allLogs = logEntryDao.getAllLogs();
         // TODO: 初始化其他 DAO 和 LiveData
     }
 
-    // --- LogDao 操作封装 ---
+    // --- LogEntryDao 操作封装 ---
     public LiveData<List<LogEntry>> getAllLogs() {
         return allLogs;
     }
     
     public LiveData<List<LogEntry>> getLogsByOperationType(String type) {
-        return logDao.getLogsByOperationType(type);
+        return logEntryDao.getLogsByOperationType(type);
     }
     
     public LiveData<List<LogEntry>> getLogsByStatus(String status) {
-        return logDao.getLogsByStatus(status);
+        return logEntryDao.getLogsByStatus(status);
     }
 
     public void insertLog(LogEntry logEntry) {
         databaseWriteExecutor.execute(() -> {
-            logDao.insert(logEntry);
+            logEntryDao.insert(logEntry);
         });
     }
 
     public void deleteLog(LogEntry logEntry) {
         databaseWriteExecutor.execute(() -> {
-            logDao.delete(logEntry);
+            logEntryDao.delete(logEntry);
         });
     }
     
     public void deleteAllLogs() {
         databaseWriteExecutor.execute(() -> {
-            logDao.deleteAllLogs();
+            logEntryDao.deleteAllLogs();
         });
     }
     

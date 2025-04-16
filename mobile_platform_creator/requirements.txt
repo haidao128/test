@@ -33,4 +33,6 @@ pytest>=7.1.2
 black>=22.6.0
 flake8>=5.0.4
 mypy>=0.971
-isort>=5.10.1 
+isort>=5.10.1
+Sphinx>=5.0.0
+sphinx-rtd-theme>=1.0.0 

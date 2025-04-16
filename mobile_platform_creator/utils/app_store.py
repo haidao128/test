@@ -21,9 +21,20 @@ import tempfile
 from typing import Dict, List, Any, Optional, Tuple, Set, Union
 from urllib.parse import urljoin
 
+# 导入顶层 CONFIG
+from .. import CONFIG # Relative import from parent package
 from .mpk_package import MPKPackage, is_valid_mpk
 
 logger = logging.getLogger("mobile_platform_creator.utils.app_store")
+
+# 默认应用商店配置
+DEFAULT_APP_STORE_CONFIG = {
+    "api_url": "https://api.mobile-platform.example.com/v1",
+    "timeout": 30,  # 请求超时时间（秒）
+    "max_retries": 3,  # 最大重试次数
+    "retry_delay": 1,  # 重试延迟（秒）
+    "verify_ssl": True,  # 是否验证 SSL 证书
+}
 
 class AppStoreError(Exception):
     """应用商店相关异常"""
@@ -32,28 +43,45 @@ class AppStoreError(Exception):
 class AppStoreClient:
     """应用商店客户端"""
     
-    def __init__(self, api_url: Optional[str] = None, repo_dir: Optional[str] = None):
+    def __init__(self, api_url: Optional[str] = None, repo_dir: Optional[str] = None,
+                 config: Optional[Dict[str, Any]] = None):
         """
         初始化应用商店客户端
         
         Args:
-            api_url: API地址，默认为None (使用官方地址)
-            repo_dir: 本地应用仓库目录，默认为None (自动选择)
+            api_url: API地址，默认为None (使用配置)
+            repo_dir: 本地应用仓库目录，默认为None (从全局配置获取)
+            config: 可选的配置参数
         """
+        # 加载配置
+        self.config = DEFAULT_APP_STORE_CONFIG.copy()
+        if config:
+            self.config.update(config)
+        
         # 设置API地址
         if api_url:
             self.api_url = api_url
         else:
-            self.api_url = "https://appstore.mobileplatform.io/api/v1/"
+            # 优先使用环境变量
+            self.api_url = os.getenv(
+                "MOBILE_PLATFORM_APP_STORE_API",
+                CONFIG.get("app_store_api_url", self.config["api_url"])
+            )
+            logger.info(f"使用应用商店 API URL: {self.api_url}")
         
-        # 设置本地仓库目录
+        # 设置本地仓库目录 - 使用全局配置作为默认值
         if repo_dir:
             self.repo_dir = repo_dir
         else:
-            self.repo_dir = os.path.expanduser("~/MobilePlatform/apps")
+            self.repo_dir = CONFIG['apps_dir']
+            logger.info(f"使用全局配置的应用仓库目录: {self.repo_dir}")
         
         # 确保目录存在
-        os.makedirs(self.repo_dir, exist_ok=True)
+        try:
+            os.makedirs(self.repo_dir, exist_ok=True)
+        except OSError as e:
+            logger.error(f"无法创建应用仓库目录 '{self.repo_dir}': {e}")
+            raise AppStoreError(f"无法创建应用仓库目录: {e}")
         
         # 本地应用索引
         self.index_path = os.path.join(self.repo_dir, "app_index.json")
@@ -61,6 +89,40 @@ class AppStoreClient:
         
         # 本地应用仓库
         self.local_repo = LocalAppRepository(self.repo_dir)
+        
+        # 初始化会话
+        self.session = requests.Session()
+        self.session.verify = self.config["verify_ssl"]
+    
+    def _make_request(self, method: str, endpoint: str, **kwargs) -> requests.Response:
+        """
+        发送 HTTP 请求
+        
+        Args:
+            method: HTTP 方法
+            endpoint: API 端点
+            **kwargs: 请求参数
+            
+        Returns:
+            requests.Response: 响应对象
+            
+        Raises:
+            AppStoreError: 请求失败
+        """
+        url = urljoin(self.api_url, endpoint)
+        kwargs.setdefault("timeout", self.config["timeout"])
+        
+        retries = 0
+        while retries < self.config["max_retries"]:
+            try:
+                response = self.session.request(method, url, **kwargs)
+                response.raise_for_status()
+                return response
+            except requests.RequestException as e:
+                retries += 1
+                if retries >= self.config["max_retries"]:
+                    raise AppStoreError(f"请求失败: {e}")
+                time.sleep(self.config["retry_delay"])
     
     def _load_local_index(self) -> Dict[str, Any]:
         """
@@ -72,14 +134,25 @@ class AppStoreClient:
         if os.path.exists(self.index_path):
             try:
                 with open(self.index_path, 'r', encoding='utf-8') as f:
-                    return json.load(f)
+                    # 添加基本验证，防止空文件或非JSON文件导致错误
+                    content = f.read()
+                    if not content:
+                        logger.warning(f"本地应用索引文件为空: {self.index_path}")
+                        return self._default_index()
+                    return json.loads(content)
+            except json.JSONDecodeError as e:
+                logger.error(f"加载本地应用索引失败 (JSON 格式错误): {e} in {self.index_path}")
             except Exception as e:
                 logger.error("加载本地应用索引失败: %s", e)
         
-        # 默认索引
+        # 返回默认索引
+        return self._default_index()
+    
+    def _default_index(self) -> Dict[str, Any]:
+        """返回默认的本地索引结构"""
         return {
-            "apps": {},
-            "last_update": 0
+            "apps": {}, # app_id -> {version, local_path, installed_path, ...}
+            "last_update_check": 0 # 时间戳
         }
     
     def _save_local_index(self) -> bool:

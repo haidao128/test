@@ -9,6 +9,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_log_test"
+        android:title="日志测试"
+        android:icon="@android:drawable/ic_menu_edit" 
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_category_manager"
         android:title="分类管理"
         android:icon="@android:drawable/ic_menu_agenda" 

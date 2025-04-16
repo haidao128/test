@@ -1,5 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mobile Platform Creator</string>
+    <string name="app_name">移动平台创建器</string>
     <string name="create_mpk_package">创建 MPK 应用包</string>
+    
+    <!-- 分类管理 -->
+    <string name="category_app_count">%d个应用</string>
+    <string name="category_add">添加分类</string>
+    <string name="category_edit">编辑分类</string>
+    <string name="category_delete">删除分类</string>
+    <string name="category_name">分类名称</string>
+    <string name="category_description">分类描述</string>
+    <string name="category_name_hint">请输入分类名称</string>
+    <string name="category_description_hint">请输入分类描述</string>
+    <string name="category_delete_confirm">确定要删除这个分类吗？</string>
+    <string name="category_delete_success">分类已删除</string>
+    <string name="category_add_success">分类已添加</string>
+    <string name="category_edit_success">分类已更新</string>
+    <string name="category_error_empty_name">分类名称不能为空</string>
+    <string name="category_error_empty_description">分类描述不能为空</string>
+    <string name="category_manager">分类管理</string>
+    <string name="category_delete_button">删除分类</string>
+    
+    <!-- 通用 -->
+    <string name="action_save">保存</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_confirm">确定</string>
+    <string name="action_delete">删除</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_share">分享</string>
+    <string name="action_more">更多</string>
     <!-- 您可以在这里添加其他字符串资源 -->
 </resources> 

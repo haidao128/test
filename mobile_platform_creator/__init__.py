@@ -31,12 +31,16 @@ logging.basicConfig(
 
 logger = logging.getLogger("mobile_platform_creator")
 
+# 基础数据目录
+_base_data_dir = os.path.expanduser("~/mobile_platform_creator")
+
 # 全局配置
 CONFIG = {
-    "data_dir": os.path.expanduser("~/mobile_platform_creator"),
-    "temp_dir": os.path.join(os.path.expanduser("~/mobile_platform_creator"), "temp"),
-    "cache_dir": os.path.join(os.path.expanduser("~/mobile_platform_creator"), "cache"),
-    "apps_dir": os.path.join(os.path.expanduser("~/mobile_platform_creator"), "apps"),
+    "data_dir": _base_data_dir,
+    "temp_dir": os.path.join(_base_data_dir, "temp"),
+    "cache_dir": os.path.join(_base_data_dir, "cache"),
+    "apps_dir": os.path.join(_base_data_dir, "apps"),
+    "backup_dir": os.path.join(_base_data_dir, "backups"),
     "debug": False,
     "platform": None,  # "android"
     "sandbox_level": "strict",  # "strict", "standard", "minimal"
@@ -57,8 +61,8 @@ def init(platform: str, debug: bool = False) -> bool:
     
     # 检查平台
     platform = platform.lower()
-    if platform not in ["android"]:
-        logger.error("不支持的平台: %s，仅支持 'android'", platform)
+    if platform not in ["android", "desktop"]:
+        logger.error("不支持的平台: %s，当前仅支持 'android' 和 'desktop' 用于测试", platform)
         return False
     
     # 设置配置
@@ -66,10 +70,15 @@ def init(platform: str, debug: bool = False) -> bool:
     CONFIG["debug"] = debug
     
     # 创建目录
-    os.makedirs(CONFIG["data_dir"], exist_ok=True)
-    os.makedirs(CONFIG["temp_dir"], exist_ok=True)
-    os.makedirs(CONFIG["cache_dir"], exist_ok=True)
-    os.makedirs(CONFIG["apps_dir"], exist_ok=True)
+    try:
+        os.makedirs(CONFIG["data_dir"], exist_ok=True)
+        os.makedirs(CONFIG["temp_dir"], exist_ok=True)
+        os.makedirs(CONFIG["cache_dir"], exist_ok=True)
+        os.makedirs(CONFIG["apps_dir"], exist_ok=True)
+        os.makedirs(CONFIG["backup_dir"], exist_ok=True)
+    except OSError as e:
+        logger.error(f"创建配置目录失败: {e}")
+        return False
     
     # 平台特定目录
     if platform == "android":
@@ -78,12 +87,12 @@ def init(platform: str, debug: bool = False) -> bool:
         os.makedirs(android_dir, exist_ok=True)
     
     # 设置日志级别
-    if debug:
-        logging.getLogger("mobile_platform_creator").setLevel(logging.DEBUG)
-    else:
-        logging.getLogger("mobile_platform_creator").setLevel(logging.INFO)
+    log_level = logging.DEBUG if debug else logging.INFO
+    logging.getLogger().setLevel(log_level)
+    logger.setLevel(log_level)
     
     logger.info("初始化完成，平台: %s，调试模式: %s", platform, debug)
+    logger.info(f"数据目录: {CONFIG['data_dir']}")
     return True
 
 def get_version() -> str:

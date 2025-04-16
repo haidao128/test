@@ -1,0 +1,14 @@
+{
+  "id": "com.example.jsapp",
+  "name": "JavaScript示例应用",
+  "version": "1.0.0",
+  "code_type": "javascript",
+  "entry_point": "main.js",
+  "platform": "desktop",
+  "min_platform_version": "1.0.0",
+  "description": "一个简单的JavaScript应用示例",
+  "author": "MPC团队",
+  "permissions": ["storage", "network", "file"],
+  "icon": "assets/icon.png",
+  "dependencies": []
+} 

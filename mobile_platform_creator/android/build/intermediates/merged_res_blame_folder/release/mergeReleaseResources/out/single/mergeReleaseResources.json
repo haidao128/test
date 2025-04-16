@@ -1,23 +1,19 @@
 [
     {
-        "merged": "com.mobileplatform.creator.android-release-51:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.mobileplatform.creator.android-main-52:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_log_test.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_log_test.xml"
     },
     {
-        "merged": "com.mobileplatform.creator.android-release-51:/menu_menu_main.xml.flat",
-        "source": "com.mobileplatform.creator.android-main-52:/menu/menu_main.xml"
-    },
-    {
-        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_main.xml.flat",
-        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_main.xml"
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_dialog_resources.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/dialog_resources.xml"
     },
     {
         "merged": "com.mobileplatform.creator.android-release-51:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
         "source": "com.mobileplatform.creator.android-main-52:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "com.mobileplatform.creator.android-release-51:/xml_file_paths.xml.flat",
-        "source": "com.mobileplatform.creator.android-main-52:/xml/file_paths.xml"
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_mpk_creator.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_mpk_creator.xml"
     },
     {
         "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_install_log.xml.flat",
@@ -26,6 +22,10 @@
     {
         "merged": "com.mobileplatform.creator.android-release-51:/layout_item_log_entry.xml.flat",
         "source": "com.mobileplatform.creator.android-main-52:/layout/item_log_entry.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_category_manager.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_category_manager.xml"
     },
     {
         "merged": "com.mobileplatform.creator.android-release-51:/layout_item_app_info.xml.flat",
@@ -38,5 +38,37 @@
     {
         "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_app_detail.xml.flat",
         "source": "com.mobileplatform.creator.android-main-52:/layout/activity_app_detail.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_item_category.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/item_category.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_main.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/menu_menu_main.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/menu/menu_main.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_dialog_category_edit.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/dialog_category_edit.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_activity_batch_manager.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/activity_batch_manager.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/xml_file_paths.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/xml/file_paths.xml"
+    },
+    {
+        "merged": "com.mobileplatform.creator.android-release-51:/layout_item_batch_app.xml.flat",
+        "source": "com.mobileplatform.creator.android-main-52:/layout/item_batch_app.xml"
     }
 ]

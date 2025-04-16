@@ -21,6 +21,8 @@ import threading
 import queue
 from typing import Dict, List, Any, Optional, Tuple, Set, Callable
 
+# 导入顶层 CONFIG
+from .. import CONFIG # Relative import from parent package
 from .mpk_package import MPKPackage, is_valid_mpk
 
 logger = logging.getLogger("mobile_platform_creator.utils.app_updater")
@@ -32,67 +34,89 @@ class UpdateError(Exception):
 class UpdateTask:
     """更新任务"""
     
-    def __init__(self, app_id: str, current_version: str, target_version: str,
-                old_path: str, new_path: Optional[str] = None):
+    def __init__(self, task_id: str, app_id: str, current_version: str, target_version: str,
+                old_path: str, new_path: Optional[str] = None, trigger: str = "manual"):
         """
         初始化更新任务
         
         Args:
+            task_id: 任务的唯一ID
             app_id: 应用ID
             current_version: 当前版本
             target_version: 目标版本
             old_path: 旧版本文件路径
-            new_path: 新版本文件路径，可选
+            new_path: 新版本文件路径，可选 (如果需要下载)
+            trigger: 触发更新的原因 ("manual", "auto")
         """
+        self.task_id = task_id
         self.app_id = app_id
         self.current_version = current_version
         self.target_version = target_version
         self.old_path = old_path
         self.new_path = new_path
-        self.status = "pending"  # pending, downloading, applying, completed, failed
+        self.trigger = trigger
+        self.status = "pending"  # pending, downloading, applying, completed, failed, cancelled
         self.progress = 0  # 0-100
-        self.error = None
-        self.start_time = 0
-        self.end_time = 0
-        self.backup_path = None
+        self.error: Optional[str] = None
+        self.start_time: float = 0
+        self.end_time: float = 0
+        self.backup_path: Optional[str] = None
 
 class AppUpdater:
     """应用更新管理器"""
     
-    def __init__(self, repo_dir: Optional[str] = None, backup_dir: Optional[str] = None):
+    def __init__(self, repo_dir: Optional[str] = None, backup_dir: Optional[str] = None,
+                 app_store_client: Optional['AppStoreClient'] = None): # Lazy import hint
         """
         初始化应用更新管理器
         
         Args:
-            repo_dir: 应用仓库目录，默认为None (自动选择)
-            backup_dir: 备份目录，默认为None (自动选择)
+            repo_dir: 应用仓库目录，默认为None (从全局配置获取)
+            backup_dir: 备份目录，默认为None (从全局配置获取)
+            app_store_client: 可选的应用商店客户端实例，用于下载更新
         """
-        # 设置目录
+        # 设置目录 - 使用全局配置作为默认值
         if repo_dir:
             self.repo_dir = repo_dir
         else:
-            self.repo_dir = os.path.expanduser("~/MobilePlatform/apps")
+            self.repo_dir = CONFIG['apps_dir']
+            logger.info(f"使用全局配置的应用仓库目录: {self.repo_dir}")
         
         if backup_dir:
             self.backup_dir = backup_dir
         else:
-            self.backup_dir = os.path.expanduser("~/MobilePlatform/backups")
+            self.backup_dir = CONFIG['backup_dir'] # 使用 __init__.py 中定义的 backup_dir
+            logger.info(f"使用全局配置的应用备份目录: {self.backup_dir}")
         
         # 确保目录存在
-        os.makedirs(self.repo_dir, exist_ok=True)
-        os.makedirs(self.backup_dir, exist_ok=True)
+        try:
+            os.makedirs(self.repo_dir, exist_ok=True)
+            os.makedirs(self.backup_dir, exist_ok=True)
+        except OSError as e:
+            logger.error(f"无法创建更新器所需目录 (仓库或备份): {e}")
+            raise UpdateError(f"无法创建更新器所需目录: {e}")
         
-        # 任务队列
+        # 依赖注入 AppStoreClient (可选)
+        self.app_store_client = app_store_client
+        
+        # 任务队列和状态
         self.tasks: Dict[str, UpdateTask] = {}
+        self._tasks_lock = threading.Lock() # 保护 tasks 字典的访问
         
         # 工作线程
-        self.worker_thread = None
+        self.worker_thread: Optional[threading.Thread] = None
         self.task_queue = queue.Queue()
-        self.running = False
+        self._stop_event = threading.Event() # 用于优雅停止工作线程
         
         # 加载更新配置
-        self.config_path = os.path.join(self.repo_dir, "update_config.json")
+        self.config_path = os.path.join(CONFIG['data_dir'], "update_config.json") # 存储在主数据目录
         self.config = self._load_config()
+        self._config_lock = threading.Lock() # 保护配置读写
+        
+        # 自动检查定时器
+        self._check_timer: Optional[threading.Timer] = None
+        if self.config.get("auto_check", True):
+            self._schedule_next_check()
     
     def _load_config(self) -> Dict[str, Any]:
         """
@@ -397,7 +421,7 @@ class AppUpdater:
         task_id = f"{app_id}_{int(time.time())}"
         
         # 创建任务
-        task = UpdateTask(app_id, current_version, target_version, old_path, new_path)
+        task = UpdateTask(task_id, app_id, current_version, target_version, old_path, new_path)
         self.tasks[task_id] = task
         
         # 将任务加入队列

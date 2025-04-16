@@ -2,12 +2,17 @@ package com.mobileplatform.creator.data;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.mobileplatform.creator.data.dao.LogDao;
-import com.mobileplatform.creator.data.entity.LogEntry;
+import com.mobileplatform.creator.model.AppCategory;
+import com.mobileplatform.creator.model.Category;
+import com.mobileplatform.creator.model.LogEntry;
+import com.mobileplatform.creator.util.Converters;
 
 // TODO: 添加其他实体类到 entities 数组中，例如 AppInfo.class, Category.class
 // TODO: 增加数据库版本号 (version) 当你修改了表结构时
@@ -16,22 +21,24 @@ import com.mobileplatform.creator.data.entity.LogEntry;
  * 应用的 Room 数据库主类。
  * 定义了数据库包含的表以及提供了 DAO 的访问方法。
  */
-@Database(entities = {LogEntry.class /*, AppInfo.class, Category.class */ }, version = 1, exportSchema = false)
+@Database(entities = {Category.class, LogEntry.class, AppCategory.class}, version = 2, exportSchema = false)
+@TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
-    public abstract LogDao logDao();
-    // TODO: 添加其他 DAO 的抽象方法，例如 appInfoDao(), categoryDao()
-
     private static volatile AppDatabase INSTANCE;
+
+    public abstract CategoryDao categoryDao();
+    public abstract LogEntryDao logEntryDao();
+    public abstract AppCategoryDao appCategoryDao();
+    // TODO: 添加其他 DAO 的抽象方法，例如 appInfoDao(), categoryDao()
 
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "mobile_platform_db")
-                            // TODO: 添加数据库迁移策略 (Migrations) 如果需要的话
-                            // .addMigrations(MIGRATION_1_2)
+                            AppDatabase.class, "app_database")
+                            .addMigrations(MIGRATION_1_2)
                             .fallbackToDestructiveMigration() // 临时：如果迁移失败，销毁并重建数据库（会丢失数据！）
                             .build();
                 }
@@ -40,14 +47,27 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
-    // TODO: 定义数据库迁移 (Migration) 对象
-    /*
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+    /**
+     * 数据库从版本1迁移到版本2的迁移规则
+     * 添加应用与分类关联表
+     */
+    static final androidx.room.migration.Migration MIGRATION_1_2 = new androidx.room.migration.Migration(1, 2) {
         @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            // 执行数据库结构变更的 SQL 语句
-            database.execSQL("ALTER TABLE install_logs ADD COLUMN user_id TEXT");
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // 创建应用与分类关联表
+            database.execSQL(
+                "CREATE TABLE IF NOT EXISTS `app_categories` (" +
+                "`package_name` TEXT NOT NULL, " +
+                "`category_id` TEXT NOT NULL, " +
+                "`add_time` INTEGER NOT NULL, " +
+                "PRIMARY KEY(`package_name`, `category_id`), " +
+                "FOREIGN KEY(`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE " +
+                ")"
+            );
+            
+            // 创建索引
+            database.execSQL("CREATE INDEX IF NOT EXISTS `index_app_categories_package_name` ON `app_categories` (`package_name`)");
+            database.execSQL("CREATE INDEX IF NOT EXISTS `index_app_categories_category_id` ON `app_categories` (`category_id`)");
         }
     };
-    */
 } 

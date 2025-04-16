@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.mobileplatform.creator.data.entity.LogEntry;
+import com.mobileplatform.creator.model.LogEntry;
 import com.mobileplatform.creator.data.repository.AppRepository;
 
 import java.util.List;

@@ -31,7 +31,7 @@ from . import (is_syscall_allowed, is_path_allowed, verify_app_certificate,
 
 logger = logging.getLogger("mobile_platform_creator.core.sandbox.runner")
 
-# 资源限制配置
+# 默认资源限制配置
 DEFAULT_RESOURCE_LIMITS = {
     "max_cpu_time": 30,        # 秒
     "max_memory": 100 * 1024 * 1024,  # 100MB
@@ -41,10 +41,39 @@ DEFAULT_RESOURCE_LIMITS = {
     "max_network_connections": 10,  # 最大网络连接数
 }
 
+# 安全级别对应的资源限制倍数
+SECURITY_LEVEL_MULTIPLIERS = {
+    "strict": {
+        "max_cpu_time": 0.5,
+        "max_memory": 0.5,
+        "max_files": 0.5,
+        "max_processes": 0.5,
+        "max_file_size": 0.5,
+        "max_network_connections": 0.5,
+    },
+    "standard": {
+        "max_cpu_time": 1.0,
+        "max_memory": 1.0,
+        "max_files": 1.0,
+        "max_processes": 1.0,
+        "max_file_size": 1.0,
+        "max_network_connections": 1.0,
+    },
+    "minimal": {
+        "max_cpu_time": 2.0,
+        "max_memory": 2.0,
+        "max_files": 2.0,
+        "max_processes": 2.0,
+        "max_file_size": 2.0,
+        "max_network_connections": 2.0,
+    }
+}
+
 class SandboxRunner:
     """沙箱运行器，用于安全地运行应用程序"""
     
-    def __init__(self, app_id: str, app_path: str, sandbox_level: str = "strict"):
+    def __init__(self, app_id: str, app_path: str, sandbox_level: str = "strict",
+                resource_limits: Optional[Dict[str, int]] = None):
         """
         初始化沙箱运行器
         
@@ -52,6 +81,7 @@ class SandboxRunner:
             app_id: 应用ID
             app_path: 应用程序路径
             sandbox_level: 沙箱安全级别
+            resource_limits: 可选的资源限制配置
         """
         self.app_id = app_id
         self.app_path = app_path
@@ -68,7 +98,17 @@ class SandboxRunner:
         }
         self.running = False
         self.logs = []
+        
+        # 设置资源限制
         self.resource_limits = DEFAULT_RESOURCE_LIMITS.copy()
+        if resource_limits:
+            self.resource_limits.update(resource_limits)
+        
+        # 根据安全级别调整资源限制
+        multipliers = SECURITY_LEVEL_MULTIPLIERS[sandbox_level]
+        for key, value in self.resource_limits.items():
+            if key in multipliers:
+                self.resource_limits[key] = int(value * multipliers[key])
         
         # 临时目录，用于存储沙箱日志和状态
         self.temp_dir = tempfile.mkdtemp(prefix=f"sandbox_{app_id}_")
@@ -84,6 +124,20 @@ class SandboxRunner:
             "allowed_paths": [],
             "isolated_home": True,
         }
+        
+        # 根据安全级别设置权限
+        if sandbox_level == "minimal":
+            self.config["allow_network"] = True
+            self.config["allow_filesystem"] = True
+        elif sandbox_level == "standard":
+            self.config["allow_network"] = True
+            self.config["allow_filesystem"] = True
+            self.config["restricted_paths"] = ["/etc", "/var"]
+        else:  # strict
+            self.config["allow_network"] = False
+            self.config["allow_filesystem"] = True
+            self.config["restricted_paths"] = ["/etc", "/var", "/usr"]
+            self.config["allowed_paths"] = [self.temp_dir]
     
     def __del__(self):
         """析构函数，确保资源被释放"""
